@@ -13,6 +13,9 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   COMPONENT_NAME: web
+  HEROKU_APP_NAME: ${{vars.HEROKU_APP_NAME}}
+  HEROKU_EMAIL: ${{vars.HEROKU_EMAIL}}
+  HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
   DOCKERFILE_LOCATION: ./Dockerfile
   ACCOUNT_NAME: ${{ github.event.repository.owner.login }}
   REPO_NAME:  ${{ github.event.repository.name }}
@@ -102,20 +105,15 @@ jobs:
           cache-to: type=gha,mode=max
           file: ${{env.DOCKERFILE_LOCATION}}
 
-
-      # Create a release generate version from tag and push to github also upload build artifacts
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     draft: false
-      #     prerelease: false
-        
-        
+      - name: Push to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.13 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{vars.HEROKU_APP_NAME}} #Must be unique in Heroku
+          heroku_email: ${{vars.HEROKU_EMAIL}}
+          usedocker: true
+      
+      
 
             
 
