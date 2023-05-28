@@ -7,5 +7,5 @@ WORKDIR /container
 
 RUN pip install -r requirements.txt
 
-CMD ["python3", "manage.py", "runserver", ]
+CMD ["python", "manage.py", "runserver", ]
 
